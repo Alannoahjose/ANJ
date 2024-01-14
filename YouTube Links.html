@@ -19,7 +19,7 @@ canvas {
     top: 0;
     left: 0;
 }
-<canvas></canvas>
+<canvas>
 	setupCanvas();
 window.addEventListener("resize", setupCanvas);
 
@@ -75,5 +75,6 @@ p.y += (pointer.y - p.y) * params.spring;
 ctx.beginPath();
 ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
 ctx.fill();
+	</canvas>
 </html>
   
