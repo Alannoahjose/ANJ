@@ -3,64 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic Tac Toe vs Computer</title>
+<title>Tic Tac Toe</title>
 <style>
-  .board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 10px; }
-  .cell { width: 100px; height: 100px; background-color: #ddd; display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer; }
-  .cell.taken { pointer-events: none; }
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    gap: 5px;
+    margin: 20px auto;
+  }
+  .cell {
+    width: 100px;
+    height: 100px;
+    background-color: #A52A2A; /* Brown color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
-<div id="gameBoard" class="board">
-  <div class="cell" data-index="0"></div>
-  <div class="cell" data-index="1"></div>
-  <div class="cell" data-index="2"></div>
-  <div class="cell" data-index="3"></div>
-  <div class="cell" data-index="4"></div>
-  <div class="cell" data-index="5"></div>
-  <div class="cell" data-index="6"></div>
-  <div class="cell" data-index="7"></div>
-  <div class="cell" data-index="8"></div>
+<div id="board" class="board">
+  <!-- Cells will be created by JavaScript -->
 </div>
 <script>
-  const cells = document.querySelectorAll('.cell');
-  let board = ['', '', '', '', '', '', '', '', ''];
+  const boardElement = document.getElementById('board');
+  const board = Array(9).fill(null);
   const player = 'X';
   const computer = 'O';
-  const winConditions = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-  ];
 
-  cells.forEach(cell => cell.addEventListener('click', playerMove));
+  // Initialize the board
+  const initializeBoard = () => {
+    boardElement.innerHTML = '';
+    board.forEach((_, index) => {
+      const cellElement = document.createElement('div');
+      cellElement.id = index;
+      cellElement.className = 'cell';
+      cellElement.addEventListener('click', playerMove);
+      boardElement.appendChild(cellElement);
+    });
+  };
 
-  function playerMove(e) {
-    const index = e.target.getAttribute('data-index');
-    if (!board[index]) {
-      makeMove(index, player);
-      setTimeout(computerMove, 600); // Computer plays after a 600ms delay
+  // Player's move
+  const playerMove = (e) => {
+    const id = e.target.id;
+    if (!board[id]) {
+      board[id] = player;
+      e.target.textContent = player;
+      if (!checkWin(player)) {
+        setTimeout(computerMove, 1000); // Computer 'thinks' for 1 second
+      }
     }
-  }
+  };
 
-  function computerMove() {
+  // Computer's move
+  const computerMove = () => {
+    // Implement a simple AI for the computer's move
     let bestScore = -Infinity;
     let move;
     for (let i = 0; i < board.length; i++) {
-      if (board[i] === '') {
+      if (!board[i]) {
         board[i] = computer;
         let score = minimax(board, 0, false);
-        board[i] = '';
+        board[i] = null;
         if (score > bestScore) {
           bestScore = score;
           move = i;
         }
       }
     }
-    makeMove(move, computer);
-  }
+    if (move !== undefined) {
+      board[move] = computer;
+      document.getElementById(move).textContent = computer;
+      checkWin(computer);
+    }
+  };
 
-  function minimax(board, depth, isMaximizing) {
+  // Minimax algorithm for AI
+  const minimax = (board, depth, isMaximizing) => {
     let result = checkWinner();
     if (result !== null) {
       return scores[result];
@@ -69,10 +93,10 @@
     if (isMaximizing) {
       let bestScore = -Infinity;
       for (let i = 0; i < board.length; i++) {
-        if (board[i] === '') {
+        if (!board[i]) {
           board[i] = computer;
           let score = minimax(board, depth + 1, false);
-          board[i] = '';
+          board[i] = null;
           bestScore = Math.max(score, bestScore);
         }
       }
@@ -80,57 +104,57 @@
     } else {
       let bestScore = Infinity;
       for (let i = 0; i < board.length; i++) {
-        if (board[i] === '') {
+        if (!board[i]) {
           board[i] = player;
           let score = minimax(board, depth + 1, true);
-          board[i] = '';
+          board[i] = null;
           bestScore = Math.min(score, bestScore);
         }
       }
       return bestScore;
     }
-  }
+  };
 
-  function makeMove(index, symbol) {
-    board[index] = symbol;
-    document.querySelector(`[data-index="${index}"]`).textContent = symbol;
-    document.querySelector(`[data-index="${index}"]`).classList.add('taken');
-    if (checkWinner()) {
-      setTimeout(() => alert(symbol + ' wins!'), 200);
-      setTimeout(resetBoard, 2000);
-    } else if (!board.includes('')) {
-      setTimeout(() => alert('Draw!'), 200);
-      setTimeout(resetBoard, 2000);
-    }
-  }
+  // Check for a winner
+  const checkWin = (currentPlayer) => {
+    const winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+      [0, 4, 8], [2, 4, 6]             // Diagonals
+    ];
 
-  function checkWinner() {
-    for (let condition of winConditions) {
-      if (board[condition[0]] && board[condition[0]] === board[condition[1]] && board[condition[0]] === board[condition[2]]) {
-        return board[condition[0]];
+    return winPatterns.some(pattern => {
+      if (pattern.every(index => board[index] === currentPlayer)) {
+        alert(`${currentPlayer} wins!`);
+        initializeBoard();
+        return true;
       }
-    }
-    if (!board.includes('')) {
+      return false;
+    });
+  };
+
+  // Check for a winner or tie
+  const checkWinner = () => {
+    if (checkWin(player)) return player;
+    if (checkWin(computer)) return computer;
+    if (board.every(cell => cell !== null)) {
+      alert('Tie!');
+      initializeBoard();
       return 'tie';
     }
     return null;
-  }
-
-  function resetBoard() {
-    board = ['', '', '', '', '', '', '', '', ''];
-    cells.forEach(cell => {
-      cell.textContent = '';
-      cell.classList.remove('taken');
-    });
-  }
-
-  const scores = {
-    'X': -10,
-    'O': 10,
-    'tie': 0
   };
+
+  // Scores for minimax
+  const scores = {
+    X: -10,
+    O: 10,
+    tie: 0
+  };
+
+  // Start the game
+  initializeBoard();
 </script>
-</body>
 <style>
 body{background-color:Cyan}
 h1{color:blue}
