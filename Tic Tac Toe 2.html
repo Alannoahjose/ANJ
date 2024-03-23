@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe Game</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  #game {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 10px;
+  }
+  .cell {
+    width: 100px;
+    height: 100px;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    cursor: pointer;
+  }
+  .cell:hover {
+    background-color: #e4e4e4;
+  }
+</style>
+</head>
+<body>
+  <div id="game">
+    <div class="row">
+      <div class="cell" data-cell-index="0"></div>
+      <div class="cell" data-cell-index="1"></div>
+      <div class="cell" data-cell-index="2"></div>
+    </div>
+    <div class="row">
+      <div class="cell" data-cell-index="3"></div>
+      <div class="cell" data-cell-index="4"></div>
+      <div class="cell" data-cell-index="5"></div>
+    </div>
+    <div class="row">
+      <div class="cell" data-cell-index="6"></div>
+      <div class="cell" data-cell-index="7"></div>
+      <div class="cell" data-cell-index="8"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    const cells = document.querySelectorAll('.cell');
+    let currentPlayer = 'X';
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    function checkForWinner(currentPlayer) {
+      return winningCombinations.some(combination => {
+        return combination.every(index => {
+          return cells[index].textContent === currentPlayer;
+        });
+      });
+    }
+    function checkForTie() {
+      return [...cells].every(cell => {
+        return cell.textContent === 'X' || cell.textContent === 'O';
+      });
+    }
+    cells.forEach(cell => {
+      cell.addEventListener('click', function() {
+        if (cell.textContent === '') {
+          cell.textContent = currentPlayer;
+          if (checkForWinner(currentPlayer)) {
+            alert(currentPlayer + ' wins!');
+            resetGame();
+          } else if (checkForTie()) {
+            alert('Tie game!');
+            resetGame();
+          } else {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          }
+        }
+      });
+    });
+    function resetGame() {
+      cells.forEach(cell => {
+        cell.textContent = '';
+      });
+      currentPlayer = 'X';
+    }
+    document.getElementById('reset').addEventListener('click', resetGame);
+  </script>
+</body>
+</html>
