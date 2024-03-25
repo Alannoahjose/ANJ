@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+<style>
+  body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+  .board { display: grid; grid-template-columns: repeat(3, 100px); gap: 10px; }
+  .cell { width: 100px; height: 100px; background-color: orange; display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer; }
+  .cell.X { color: red; }
+  .cell.O { color: blue; }
+</style>
+</head>
+<body>
+<div id="board" class="board">
+  <div class="cell" data-cell-index="0"></div>
+  <div class="cell" data-cell-index="1"></div>
+  <div class="cell" data-cell-index="2"></div>
+  <div class="cell" data-cell-index="3"></div>
+  <div class="cell" data-cell-index="4"></div>
+  <div class="cell" data-cell-index="5"></div>
+  <div class="cell" data-cell-index="6"></div>
+  <div class="cell" data-cell-index="7"></div>
+  <div class="cell" data-cell-index="8"></div>
+</div>
+
+<script>
+const cells = document.querySelectorAll('.cell');
+let board = ['','','','','','','','',''];
+let currentPlayer = 'X';
+let gameActive = true;
+
+const winningConditions = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
+
+function handleCellPlayed(clickedCell, clickedCellIndex) {
+  board[clickedCellIndex] = currentPlayer;
+  clickedCell.innerHTML = currentPlayer;
+}
+
+function handlePlayerChange() {
+  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+}
+
+function handleResultValidation() {
+  let roundWon = false;
+  for (let i = 0; i <= 7; i++) {
+    const winCondition = winningConditions[i];
+    let a = board[winCondition[0]];
+    let b = board[winCondition[1]];
+    let c = board[winCondition[2]];
+    if (a === '' || b === '' || c === '') {
+      continue;
+    }
+    if (a === b && b === c) {
+      roundWon = true;
+      break;
+    }
+  }
+
+  if (roundWon) {
+    setTimeout(() => {
+      alert('Player ' + currentPlayer + ' Wins!');
+      handleRestartGame();
+    }, 100);
+    return;
+  }
+
+  let roundDraw = !board.includes('');
+  if (roundDraw) {
+    setTimeout(() => {
+      alert('Draw!');
+      handleRestartGame();
+    }, 100);
+    return;
+  }
+
+  handlePlayerChange();
+}
+
+function handleCellClick(clickedCellEvent) {
+  const clickedCell = clickedCellEvent.target;
+  const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
+
+  if (board[clickedCellIndex] !== '' || !gameActive) {
+    return;
+  }
+
+  handleCellPlayed(clickedCell, clickedCellIndex);
+  handleResultValidation();
+
+  if (currentPlayer === 'O') {
+    setTimeout(computerMove, 600);
+  }
+}
+
+function computerMove() {
+  let availableCells = board.map((cell, idx) => cell === '' ? idx : null).filter(val => val !== null);
+  let randomCellIndex = availableCells[Math.floor(Math.random() * availableCells.length)];
+  if (randomCellIndex !== undefined) {
+    handleCellPlayed(cells[randomCellIndex], randomCellIndex);
+    handleResultValidation();
+  }
+}
+
+function handleRestartGame() {
+  gameActive = true;
+  currentPlayer = 'X';
+  board = ['','','','','','','','',''];
+  cells.forEach(cell => cell.innerHTML = '');
+}
+
+document.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click', handleCellClick));
+
+</script>
+<style>
+.cell {
+  border: 2px solid black;
+}
+
+</style>
+<style>
+body {
+  background-image: url('https://www.texturex.com/wp-content/uploads/2018/03/wood-texture-red-grain-wooden-panel-design-wallpaper-5-1024x683.jpg');
+}
+</style>
+</body>
+</html>
