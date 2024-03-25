@@ -5,9 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tic Tac Toe vs Computer</title>
 <style>
-  .board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 10px; }
+html, body {
+  height: 100%;
+  margin: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 10px; }
   .cell { width: 100px; height: 100px; background-color: #ddd; display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer; }
   .cell.taken { pointer-events: none; }
+}
+
 </style>
 </head>
 <body>
