@@ -3,55 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic Tac Toe Game</title>
-<link rel="stylesheet" href="style.css">
+<title>Tic Tac Toe</title>
 <style>
   body {
-    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
   }
-  #game {
+  #ticTacToe {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-gap: 10px;
+    justify-content: center;
   }
   .cell {
     width: 100px;
     height: 100px;
-    background-color: #f0f0f0;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2em;
+    background-color: orange;
     cursor: pointer;
-  }
-  .cell:hover {
-    background-color: #e4e4e4;
+    font-size: 2em;
   }
 </style>
 </head>
 <body>
-  <div id="game">
-    <div class="row">
-      <div class="cell" data-cell-index="0"></div>
-      <div class="cell" data-cell-index="1"></div>
-      <div class="cell" data-cell-index="2"></div>
-    </div>
-    <div class="row">
-      <div class="cell" data-cell-index="3"></div>
-      <div class="cell" data-cell-index="4"></div>
-      <div class="cell" data-cell-index="5"></div>
-    </div>
-    <div class="row">
-      <div class="cell" data-cell-index="6"></div>
-      <div class="cell" data-cell-index="7"></div>
-      <div class="cell" data-cell-index="8"></div>
-    </div>
-  </div>
+<div id="ticTacToe">
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+  <div class="cell" onclick="makeMove(this)"></div>
+</div>
+
   <script src="script.js"></script>
   <script>
     const cells = document.querySelectorAll('.cell');
@@ -97,10 +88,17 @@
     }
     document.getElementById('reset').addEventListener('click', resetGame);
   </script>
-</body>
 <style>
 body {
   background-image: url('https://www.texturex.com/wp-content/uploads/2018/03/wood-texture-red-grain-wooden-panel-design-wallpaper-5-1024x683.jpg');
 }
 </style>
+<style>
+.cell {
+  border: 2px solid black;
+}
+
+</style>
+</body>
 </html>
+
