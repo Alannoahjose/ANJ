@@ -102,17 +102,17 @@ html, body {
   }
 
   function makeMove(index, symbol) {
-    board[index] = symbol;
-    document.querySelector(`[data-index="${index}"]`).textContent = symbol;
-    document.querySelector(`[data-index="${index}"]`).classList.add('taken');
-    if (checkWinner()) {
-      setTimeout(() => alert(symbol + ' wins!'), 200);
-      setTimeout(resetBoard, 2000);
-    } else if (!board.includes('')) {
-      setTimeout(() => alert('Draw!'), 200);
-      setTimeout(resetBoard, 2000);
-    }
+  board[index] = symbol;
+  document.querySelector(`[data-index="${index}"]`).textContent = symbol;
+  document.querySelector(`[data-index="${index}"]`).classList.add('taken');
+  let winner = checkWinner();
+  if (winner) {
+    let message = winner === 'tie' ? 'Draw!' : symbol + ' wins!';
+    setTimeout(() => alert(message), 200);
+    setTimeout(resetBoard, 2000);
   }
+}
+
 
   function checkWinner() {
     for (let condition of winConditions) {
