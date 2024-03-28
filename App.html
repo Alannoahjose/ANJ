@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe Game</title>
+<style>
+  body { font-family: Arial, sans-serif; }
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-width: 300px; margin: 20px auto; }
+  .cell { width: 100px; height: 100px; border: 2px solid #555; display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer; }
+  .cell:hover { background-color: #e3e3e3; }
+  .cell.X { color: blue; }
+  .cell.O { color: red; }
+</style>
+</head>
+<body>
+<div id="gameBoard" class="board">
+  <div class="cell" onclick="makeMove(this, 0)"></div>
+  <div class="cell" onclick="makeMove(this, 1)"></div>
+  <div class="cell" onclick="makeMove(this, 2)"></div>
+  <div class="cell" onclick="makeMove(this, 3)"></div>
+  <div class="cell" onclick="makeMove(this, 4)"></div>
+  <div class="cell" onclick="makeMove(this, 5)"></div>
+  <div class="cell" onclick="makeMove(this, 6)"></div>
+  <div class="cell" onclick="makeMove(this, 7)"></div>
+  <div class="cell" onclick="makeMove(this, 8)"></div>
+</div>
+
+<script>
+const board = ['', '', '', '', '', '', '', '', ''];
+const player = 'X';
+const computer = 'O';
+
+function makeMove(cell, index) {
+  if (board[index] === '') {
+    cell.innerText = player;
+    board[index] = player;
+    const win = checkWin(player);
+    if (win) {
+      alert('Player wins!');
+      return;
+    }
+    computerMove();
+  }
+}
+
+function computerMove() {
+  let available = board.map((cell, index) => cell === '' ? index : null).filter(val => val !== null);
+  setTimeout(() => {
+    let randomIndex = available[Math.floor(Math.random() * available.length)];
+    if (randomIndex !== undefined) {
+      document.querySelectorAll('.cell')[randomIndex].innerText = computer;
+      board[randomIndex] = computer;
+      if (checkWin(computer)) {
+        alert('Computer wins!');
+      }
+    }
+  }, 600); // Delay of 600 milliseconds
+}
+
+
+function checkWin(symbol) {
+  const winPatterns = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+    [0, 4, 8], [2, 4, 6]             // Diagonals
+  ];
+  return winPatterns.some(pattern => pattern.every(index => board[index] === symbol));
+}
+</script>
+</body>
+</html>
